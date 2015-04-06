@@ -2,6 +2,7 @@ package com.trencadis.mvd;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -28,7 +29,7 @@ import nl.littlerobots.bean.message.Led;
 
 public class MainActivity extends Activity {
 
-    private Button searchForLBBs, readTemp, resetText, readAcceleration, readLED, setLED, resetLED, sendMessage;
+    private Button searchForLBBs, readTemp, resetText, readAcceleration, readLED, setLED, resetLED, sendMessage, succesiveConnections;
 
     private ScrollView scrollView;
 
@@ -173,6 +174,18 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 sendMessageDialog();
+            }
+        });
+
+        succesiveConnections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(connectedBean != null){
+                    connectedBean.disconnect();
+                    connectedBean = null;
+                }
+                Intent intent = new Intent(MainActivity.this, SuccesiveConnections.class);
+                startActivity(intent);
             }
         });
     }
@@ -329,6 +342,8 @@ public class MainActivity extends Activity {
         setLED = (Button) findViewById(R.id.set_led);
         resetLED = (Button) findViewById(R.id.reset_led);
         sendMessage = (Button) findViewById(R.id.send_message);
+
+        succesiveConnections = (Button) findViewById(R.id.succesive_connections);
     }
 
     private void showDevices(){
