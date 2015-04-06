@@ -45,12 +45,20 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
         indexOfConnectedBean++;
 
         if(indexOfConnectedBean == foundBeans.size()){
+
             indexOfConnectedBean = 0;
+            addText("Waiting for 5 seconds");
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    connectToBean();
+                }
+            }, 5000);
 
+        }else {
+            connectToBean();
         }
-
-        connectToBean();
-
     }
 
     private void startConnections() {
@@ -60,11 +68,15 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
 
     private void connectToBean() {
 
+        if(connectedBean != null && connectedBean.isConnected()){
+            addText("Device is still connected to : " + connectedBean.getDevice().getName());
+        }
+
         addText("Attempting connection to : " + foundBeans.get(indexOfConnectedBean).getDevice().getName());
 
         connectedBean = foundBeans.get(indexOfConnectedBean);
 
-        foundBeans.get(indexOfConnectedBean).connect(this, this);
+        connectedBean.connect(this, this);
 
     }
 
@@ -116,11 +128,25 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
 
     @Override
     public void onSerialMessageReceived(byte[] bytes) {
+        addText("On serial message received" + " " + byteArrayToString(bytes));
 
     }
 
     @Override
     public void onScratchValueChanged(int i, byte[] bytes) {
 
+    }
+
+    private String byteArrayToString(byte[] bytes){
+        /*
+        String x = "";
+        for(int i = 0; i < bytes.length; i++){
+
+            x += bytes[i];
+
+        }
+        return x;
+        */
+        return new String(bytes);
     }
 }
