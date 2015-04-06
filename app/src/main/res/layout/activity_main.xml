@@ -1,0 +1,89 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search for LBBs"/>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/reset_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reset text"/>
+
+            <Button
+                android:id="@+id/read_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Read temperature"/>
+
+            <Button
+                android:id="@+id/read_acceleration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Read acceleration"/>
+
+            <Button
+                android:id="@+id/read_led"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Read LED"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="2">
+
+                <Button
+                    android:id="@+id/set_led"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Set random LED color"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/reset_led"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Reset LED"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/send_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Send message"/>
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
