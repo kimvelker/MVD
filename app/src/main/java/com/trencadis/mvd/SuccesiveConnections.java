@@ -1,6 +1,7 @@
 package com.trencadis.mvd;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
@@ -33,7 +34,8 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.second_activity);
-
+        foundBeans = new ArrayList<>();
+        indexOfConnectedBean = 0;
         findViews();
 
         BeanManager beanManager = BeanManager.getInstance();
@@ -45,8 +47,11 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
         indexOfConnectedBean++;
 
         if(indexOfConnectedBean == foundBeans.size()){
-
             indexOfConnectedBean = 0;
+            Intent intent = new Intent(this, SuccesiveConnections.class);
+            startActivity(intent);
+            finish();
+            /*
             addText("Waiting for 5 seconds");
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -55,7 +60,7 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
                     connectToBean();
                 }
             }, 5000);
-
+            */
         }else {
             connectToBean();
         }
@@ -68,12 +73,16 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
 
     private void connectToBean() {
 
-        if(connectedBean != null && connectedBean.isConnected()){
-            addText("Device is still connected to : " + connectedBean.getDevice().getName());
+        for(int i = 0; i < foundBeans.size(); i++){
+            if(foundBeans.get(i).isConnected()){
+                addText("Device still connected to : " + foundBeans.get(i).getDevice().getName());
+            }
         }
-
-        addText("Attempting connection to : " + foundBeans.get(indexOfConnectedBean).getDevice().getName());
-
+        try {
+            addText("Attempting connection to : " + foundBeans.get(indexOfConnectedBean).getDevice().getName());
+        }catch (IndexOutOfBoundsException e){
+            return;
+        }
         connectedBean = foundBeans.get(indexOfConnectedBean);
 
         connectedBean.connect(this, this);
