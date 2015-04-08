@@ -121,7 +121,7 @@ public class DataBase extends SQLiteOpenHelper {
     public ArrayList<Entry> getEntries(){
         ArrayList<Entry> entries = new ArrayList<>();
 
-        String lbbId, sensorId, type, valueTo, valueFrom, lastMessage, timestamp;
+        String lbbId, sensorId, type, valueTo, valueFrom, lastMessage, timestamp, timestampSent;
 
 
         String selectQuery = "SELECT  * FROM " + TABLE;
@@ -140,8 +140,9 @@ public class DataBase extends SQLiteOpenHelper {
                 valueFrom = cursor.getString(5);
                 lastMessage = cursor.getString(6);
                 timestamp = cursor.getString(7);
+                timestampSent = cursor.getString(8);
 
-                entries.add(new Entry(lbbId, sensorId, type, valueTo, valueFrom, lastMessage, timestamp));
+                entries.add(new Entry(lbbId, sensorId, type, valueTo, valueFrom, lastMessage, timestamp, timestampSent));
 
             cursor.moveToNext();
 

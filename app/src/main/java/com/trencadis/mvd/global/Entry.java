@@ -1,5 +1,7 @@
 package com.trencadis.mvd.global;
 
+import java.util.Calendar;
+
 public class Entry {
 
     public static final String READ = "R";
@@ -9,7 +11,7 @@ public class Entry {
 
     public enum Type {READ, WRITE}
 
-    private String lbbId, sensorId, valueTo, valueFrom, lastMessage, timestamp;
+    private String lbbId, sensorId, valueTo, valueFrom, lastMessage, timestamp, timestampSent = "";
 
     private Type type;
 
@@ -38,7 +40,7 @@ public class Entry {
 
     }
 
-    public Entry(String lbbId, String sensorId, String type, String valueTo, String valueFrom, String lastMessage, String timestamp){
+    public Entry(String lbbId, String sensorId, String type, String valueTo, String valueFrom, String lastMessage, String timestamp, String timestampSent){
         this.lbbId = lbbId;
         this.sensorId = sensorId;
 
@@ -52,6 +54,12 @@ public class Entry {
 
         this.timestamp = timestamp;
 
+        this.timestampSent = timestampSent;
+
+    }
+
+    public boolean mustSend(){
+        return (timestampSent.length() == 0);
     }
 
     private void setType(String type) {
@@ -70,7 +78,51 @@ public class Entry {
     private void setTimestamp() {
         timestamp = "";
 
-        timestamp = "" + (System.currentTimeMillis() / 1000);
+        Calendar c = Calendar.getInstance();
+
+        timestamp += c.get(Calendar.YEAR);
+
+        int month = c.get(Calendar.MONTH);
+
+        if(month < 10){
+            timestamp += "-0" + month;
+        }else{
+            timestamp += "-" + month;
+        }
+
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        if(day < 10){
+            timestamp += "-0" + day;
+        }else{
+            timestamp += "-" + day;
+        }
+
+        timestamp += " ";
+
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+
+        if(hour < 10){
+            timestamp += "-0" + hour;
+        }else{
+            timestamp += "-" + hour;
+        }
+
+        int minute = c.get(Calendar.MINUTE);
+
+        if(minute < 10){
+            timestamp += "-0" + minute;
+        }else{
+            timestamp += "-" + minute;
+        }
+
+        int seconds = c.get(Calendar.SECOND);
+
+        if(seconds < 10){
+            timestamp += "-0" + seconds;
+        }else{
+            timestamp += "-" + seconds;
+        }
 
     }
 

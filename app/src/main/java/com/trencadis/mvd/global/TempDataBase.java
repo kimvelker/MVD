@@ -139,7 +139,7 @@ public class TempDataBase extends SQLiteOpenHelper {
             lastMessage = cursor.getString(6);
             timestamp = cursor.getString(7);
 
-            entries.add(new Entry(lbbId, sensorId, type, valueTo, valueFrom, lastMessage, timestamp));
+            entries.add(new Entry(lbbId, sensorId, type, valueTo, valueFrom, lastMessage, timestamp, ""));
 
             cursor.moveToNext();
 
