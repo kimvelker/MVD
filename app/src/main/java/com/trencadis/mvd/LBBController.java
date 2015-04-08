@@ -27,9 +27,9 @@ import nl.littlerobots.bean.message.Callback;
 import nl.littlerobots.bean.message.Led;
 
 
-public class MainActivity extends Activity {
+public class LBBController extends Activity {
 
-    private Button searchForLBBs, readTemp, resetText, readAcceleration, readLED, setLED, resetLED, sendMessage, succesiveConnections;
+    private Button searchForLBBs, readTemp, resetText, readAcceleration, readLED, setLED, resetLED, sendMessage;
 
     private ScrollView scrollView;
 
@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void onConnectionFailed() {
-            Toast.makeText(MainActivity.this, "Ceva n-o mers", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LBBController.this, "Ceva n-o mers", Toast.LENGTH_SHORT).show();
             connectedBean = null;
         }
 
@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.lbb_controller);
 
         findViews();
 
@@ -174,18 +174,6 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 sendMessageDialog();
-            }
-        });
-
-        succesiveConnections.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(connectedBean != null){
-                    connectedBean.disconnect();
-                    connectedBean = null;
-                }
-                Intent intent = new Intent(MainActivity.this, SuccesiveConnections.class);
-                startActivity(intent);
             }
         });
     }
@@ -342,8 +330,6 @@ public class MainActivity extends Activity {
         setLED = (Button) findViewById(R.id.set_led);
         resetLED = (Button) findViewById(R.id.reset_led);
         sendMessage = (Button) findViewById(R.id.send_message);
-
-        succesiveConnections = (Button) findViewById(R.id.succesive_connections);
     }
 
     private void showDevices(){
@@ -362,16 +348,18 @@ public class MainActivity extends Activity {
     }
 
     private String byteArrayToString(byte[] bytes){
-        /*
-        String x = "";
-        for(int i = 0; i < bytes.length; i++){
+        String result = new String(bytes);
+        if(result.length() > 0){
+            return result;
+        }else{
+            String x = "";
+            for(int i = 0; i < bytes.length; i++){
 
-            x += bytes[i];
+                x += bytes[i];
 
+            }
+            return x;
         }
-        return x;
-        */
-        return new String(bytes);
     }
 
     @Override

@@ -48,10 +48,12 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
 
         if(indexOfConnectedBean == foundBeans.size()){
             indexOfConnectedBean = 0;
+            return;
+            /*
             Intent intent = new Intent(this, SuccesiveConnections.class);
             startActivity(intent);
             finish();
-            /*
+
             addText("Waiting for 5 seconds");
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -80,12 +82,13 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
         }
         try {
             addText("Attempting connection to : " + foundBeans.get(indexOfConnectedBean).getDevice().getName());
-        }catch (IndexOutOfBoundsException e){
-            return;
-        }
-        connectedBean = foundBeans.get(indexOfConnectedBean);
 
-        connectedBean.connect(this, this);
+            connectedBean = foundBeans.get(indexOfConnectedBean);
+            connectedBean.connect(this, this);
+
+        }catch (IndexOutOfBoundsException e){
+
+        }
 
     }
 
@@ -112,6 +115,7 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
     @Override
     public void onConnected() {
         addText("Connected to : " + connectedBean.getDevice().getName());
+
         Handler handler = new Handler();
 
         handler.postDelayed(new Runnable() {
@@ -120,7 +124,7 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
                 connectedBean.disconnect();
                 goToNextBean();
             }
-        }, 5000);
+        }, 10000);
     }
 
     @Override
@@ -137,8 +141,13 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
 
     @Override
     public void onSerialMessageReceived(byte[] bytes) {
-        addText("On serial message received" + " " + byteArrayToString(bytes));
+        String result = byteArrayToString(bytes);
+        addText("On serial message received" + " " + result);
+        handleResult(result);
+    }
 
+    private void handleResult(String result) {
+        // TODO get all sensors from string
     }
 
     @Override
