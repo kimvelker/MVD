@@ -7,6 +7,10 @@ import android.os.Handler;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.trencadis.mvd.global.DataBase;
+import com.trencadis.mvd.global.Entry;
+import com.trencadis.mvd.global.TempDataBase;
+
 import java.util.ArrayList;
 
 import nl.littlerobots.bean.Bean;
@@ -19,6 +23,12 @@ import nl.littlerobots.bean.BeanManager;
  */
 public class SuccesiveConnections extends Activity implements BeanDiscoveryListener, BeanListener{
 
+    private static final String ENUM_COUNT = "enum";
+    private static final String GET_SENSOR_ID = "get ID_SENZOR";
+    private static final String GET_LBB_ID = "lbbId";
+
+    private static final long DELAY_BEFORE_SENDING_FIRST_MESSAGE = 15000;
+
     private ArrayList<Bean> foundBeans = new ArrayList<>();
 
     private Bean connectedBean = null;
@@ -27,6 +37,16 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
 
     private TextView textView;
 
+    private DataBase dataBase;
+    private TempDataBase tempDataBase;
+
+    private Runnable runnable;
+
+    // variables for getting data from LBB
+    private String lbbId, sensorId, type, valueFrom, lastMessage;
+    private int numberOfSensors, currentSensorIndex;
+    private String result;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,35 +54,50 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.second_activity);
-        foundBeans = new ArrayList<>();
-        indexOfConnectedBean = 0;
+
+        init();
+
         findViews();
 
-        BeanManager beanManager = BeanManager.getInstance();
+        final BeanManager beanManager = BeanManager.getInstance();
         beanManager.startDiscovery(this);
+
+        Handler handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                beanManager.cancelDiscovery();
+                SuccesiveConnections.this.onDiscoveryComplete();
+            }
+        }, 7000);
+    }
+
+    private void init() {
+        foundBeans = new ArrayList<>();
+        indexOfConnectedBean = 0;
+
+        dataBase = DataBase.getInstance(this);
+        tempDataBase = TempDataBase.getInstance(this);
 
     }
 
     private void goToNextBean() {
         indexOfConnectedBean++;
 
-        if(indexOfConnectedBean == foundBeans.size()){
+        if(indexOfConnectedBean >= foundBeans.size()){
             indexOfConnectedBean = 0;
-            return;
-            /*
-            Intent intent = new Intent(this, SuccesiveConnections.class);
-            startActivity(intent);
-            finish();
-
-            addText("Waiting for 5 seconds");
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    connectToBean();
+                    Intent intent = new Intent(SuccesiveConnections.this, SuccesiveConnections.class);
+                    startActivity(intent);
+                    finish();
                 }
             }, 5000);
-            */
+
+
         }else {
             connectToBean();
         }
@@ -74,13 +109,14 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
     }
 
     private void connectToBean() {
-
-        for(int i = 0; i < foundBeans.size(); i++){
-            if(foundBeans.get(i).isConnected()){
-                addText("Device still connected to : " + foundBeans.get(i).getDevice().getName());
-            }
-        }
         try {
+
+            for(int i = 0; i < foundBeans.size(); i++){
+                if(foundBeans.get(i).isConnected()){
+                    addText("Device still connected to : " + foundBeans.get(i).getDevice().getName());
+                }
+            }
+
             addText("Attempting connection to : " + foundBeans.get(indexOfConnectedBean).getDevice().getName());
 
             connectedBean = foundBeans.get(indexOfConnectedBean);
@@ -109,22 +145,30 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
     @Override
     public void onDiscoveryComplete() {
         addText("Discovery complete");
-        startConnections();
+        if(foundBeans.size() > 0){
+            startConnections();
+        }else{
+            BeanManager.getInstance().startDiscovery(this);
+        }
     }
 
     @Override
     public void onConnected() {
         addText("Connected to : " + connectedBean.getDevice().getName());
 
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                getLBBId();
+            }
+        };
         Handler handler = new Handler();
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                connectedBean.disconnect();
-                goToNextBean();
+                sendSerialMessage(GET_LBB_ID);
             }
-        }, 10000);
+        }, DELAY_BEFORE_SENDING_FIRST_MESSAGE);
     }
 
     @Override
@@ -141,13 +185,15 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
 
     @Override
     public void onSerialMessageReceived(byte[] bytes) {
-        String result = byteArrayToString(bytes);
+        result = byteArrayToString(bytes);
+        System.out.println(result);
         addText("On serial message received" + " " + result);
-        handleResult(result);
-    }
-
-    private void handleResult(String result) {
-        // TODO get all sensors from string
+        Handler handler = new Handler();
+        if(runnable != null) {
+            handler.post(runnable);
+        }else{
+            throw new NullPointerException();
+        }
     }
 
     @Override
@@ -156,15 +202,101 @@ public class SuccesiveConnections extends Activity implements BeanDiscoveryListe
     }
 
     private String byteArrayToString(byte[] bytes){
-        /*
-        String x = "";
-        for(int i = 0; i < bytes.length; i++){
+        String result = new String(bytes);
+        if(result.length() > 0){
+            return result;
+        }else{
+            String x = "";
+            for(int i = 0; i < bytes.length; i++){
 
-            x += bytes[i];
+                x += bytes[i];
 
+            }
+            return x;
         }
-        return x;
-        */
-        return new String(bytes);
     }
+
+    private void getLBBId(){
+        lbbId = result;
+        System.out.println("LBB id = " + lbbId);
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                getNumberOfSensors();
+            }
+        };
+        sendSerialMessage(ENUM_COUNT);
+    }
+
+    private void getNumberOfSensors() {
+        currentSensorIndex = 0;
+        try {
+            numberOfSensors = Integer.parseInt(result);
+        }catch (NumberFormatException e){
+            numberOfSensors = -1;
+        }
+        System.out.println("No of sensors = " + numberOfSensors);
+
+        if(numberOfSensors == -1){
+            goToNextBean();
+            return;
+        }
+
+        getCurrentSensor();
+    }
+
+    private void getCurrentSensor() {
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                getSensorIdAndType();
+            }
+        };
+
+        sendSerialMessage(ENUM_COUNT + currentSensorIndex);
+    }
+
+    private void getSensorIdAndType() {
+        String[] results = result.split(";");
+        sensorId = results[0];
+        type = results[1];
+
+        checkIfDataMustBeSent(lbbId, sensorId);
+
+        if(type.equalsIgnoreCase(Entry.READ)){
+            valueFrom = results[2];
+            lastMessage = results[3];
+        }else{
+            lastMessage = results[2];
+        }
+
+        Entry entry = new Entry(lbbId, sensorId, type, valueFrom, lastMessage);
+
+        dataBase.addEntry(entry);
+        tempDataBase.addEntry(entry);
+
+        goToNextSensor();
+
+    }
+
+    private void goToNextSensor() {
+        currentSensorIndex++;
+        if(currentSensorIndex >= numberOfSensors){
+            connectedBean.disconnect();
+            goToNextBean();
+        }else{
+            getCurrentSensor();
+        }
+
+    }
+
+    private void checkIfDataMustBeSent(String lbbId, String sensorId) {
+        // TODO
+    }
+
+    private void sendSerialMessage(String msg){
+        addText("Sending serial message : " + msg);
+        connectedBean.sendSerialMessage(msg);
+    }
+
 }

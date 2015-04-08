@@ -21,7 +21,7 @@ public class TempDataBase extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "temp_db";
 
-    private static final String ID = "id";
+    private static final String ID = "_id";
     private static final String LBB_ID = "lbb_id";
     private static final String SENSOR_ID = "sensor_id";
     private static final String TYPE = "type";
@@ -30,8 +30,16 @@ public class TempDataBase extends SQLiteOpenHelper {
     private static final String LAST_MESSAGE = "last_message";
     private static final String TIMESTAMP = "timestamp";
 
+    public static TempDataBase tempDataBase = null;
 
-    public TempDataBase(Context context) {
+    public static TempDataBase getInstance(Context context){
+        if(tempDataBase == null){
+            tempDataBase = new TempDataBase(context);
+        }
+        return tempDataBase;
+    }
+
+    private TempDataBase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -44,7 +52,7 @@ public class TempDataBase extends SQLiteOpenHelper {
                 + TYPE + " TEXT,"
                 + VALUE_TO + " TEXT,"
                 + VALUE_FROM + " TEXT,"
-                + LAST_MESSAGE + " TEXT"
+                + LAST_MESSAGE + " TEXT,"
                 + TIMESTAMP + " TEXT" + ")";
         db.execSQL(CREATE_TABLE);
     }
@@ -91,7 +99,7 @@ public class TempDataBase extends SQLiteOpenHelper {
             if (lbbId.equalsIgnoreCase(cursor.getString(1))
                     && sensorId.equalsIgnoreCase(cursor.getString(2))){
                 id = cursor.getInt(0);
-                String whereClause = "id"+"=?";
+                String whereClause = ID + "=?";
 
                 String[]whereArgs = new String[] {"" + id};
 

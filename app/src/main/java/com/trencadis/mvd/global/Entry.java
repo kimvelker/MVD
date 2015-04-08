@@ -2,8 +2,10 @@ package com.trencadis.mvd.global;
 
 public class Entry {
 
-    private static final String READ = "R";
-    private static final String WRITE = "W";
+    public static final String READ = "R";
+    public static final String WRITE = "W";
+    public static final String OK = "ok";
+    public static final String ERROR = "error";
 
     public enum Type {READ, WRITE}
 
