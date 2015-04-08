@@ -1,7 +1,5 @@
 # MVD
 
-# MVD
-
 user case protocol commu
 
 when first LBB:
@@ -68,4 +66,3 @@ scrie dani
 - TIMESTAMP ID_LBB ID_SENZOR TIP_SENZOR VALUE_FROM VALUE_TO LAST_MESSAGE TIMESTAMP_SENT
 
 - for notification ID_LBB ID_SENZOR VALUE_TO TIMESTAMP_NOTIFY
-
