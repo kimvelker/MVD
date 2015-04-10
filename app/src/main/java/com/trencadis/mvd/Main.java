@@ -1,6 +1,7 @@
 package com.trencadis.mvd;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.trencadis.mvd.global.DataBase;
@@ -118,6 +120,9 @@ public class Main extends Activity {
                 } else {
                     System.out.println("regId is set");
                     setNotifications();
+                    TextView textView = (TextView) findViewById(R.id.regId);
+                    textView.setText(regId);
+
                 }
             };
 

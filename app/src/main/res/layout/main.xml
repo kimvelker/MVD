@@ -15,4 +15,9 @@
         android:layout_height="wrap_content"
         android:text="Succesive connections"/>
 
+    <TextView
+        android:id="@+id/regId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
