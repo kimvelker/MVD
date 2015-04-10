@@ -3,27 +3,32 @@ package com.trencadis.mvd;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.trencadis.mvd.global.DataBase;
 import com.trencadis.mvd.global.Entry;
 import com.trencadis.mvd.global.Global;
 import com.trencadis.mvd.internet.ConnectionDetector;
 import com.trencadis.mvd.internet.Parser;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created by Kimv on 4/8/2015.
- */
 public class Main extends Activity {
 
     private static final int BLUETOOTH_INTENT_CODE = 100;
     private static final long DELAY_BETWEEN_CONNECTIONS = 1000 * 60 * 5; // 5 minutes
+
+    private static final int SUCCESS = 1;
 
     private static final String METHOD = "METHOD";
     private static final String METHOD_VALUE = "storeData";
@@ -35,6 +40,7 @@ public class Main extends Activity {
     private static final String VALUE_FROM = "VALUE_FROM";
     private static final String VALUE_TO = "VALUE_TO";
     private static final String LAST_MESSAGE = "LAST_MESSAGE";
+    private static final String STATUS = "status";
 
     private Button lbbController, succesiveConnections;
 
@@ -42,6 +48,9 @@ public class Main extends Activity {
     private int nextEntryIndex;
 
     private DataBase db;
+
+    private String regId = null;
+    private GoogleCloudMessaging gcm = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +68,64 @@ public class Main extends Activity {
 
         startWebAPI();
 
+        registerForNotifications();
+
+    }
+
+    private void registerForNotifications() {
+
+        new AsyncTask<Void, Void, Void>() {
+
+            private boolean isOk;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                isOk = true;
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging
+                                .getInstance(getApplicationContext());
+                    }
+
+                    regId = gcm.register(Global.GCM_PROJECT_ID);
+                    Log.i("GCM", "!!!!! " + regId);
+
+                    if (regId == null) {
+                        isOk = false;
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    isOk = false;
+                }
+                return null;
+            }
+
+            protected void onPostExecute(Void result) {
+                if (!isOk) {
+                    try {
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                registerForNotifications();
+                            }
+                        }, 1000);
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                        isOk = false;
+                    }
+                } else {
+                    System.out.println("regId is set");
+                    setNotifications();
+                }
+            };
+
+        }.execute();
+    }
+
+    private void setNotifications() {
+        // TODO
     }
 
     private void startWebAPI() {
@@ -97,10 +164,15 @@ public class Main extends Activity {
             @Override
             protected void onPostExecute(Void result) {
 
-                db.setEntrySent(entry);
+                try {
+                    if (getObject().getInt(STATUS) == SUCCESS) {
+                        db.setEntrySent(entry);
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
 
                 Handler handler = new Handler();
-
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

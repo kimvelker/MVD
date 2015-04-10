@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Kimv\.gradle\caches\modules-2\files-2.1\com.github.frankiesardo\auto-parcel\0.2\d28e477be0a5a3f8fc6770310868528563c3fd37\auto-parcel-0.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d28e477be0a5a3f8fc6770310868528563c3fd37">
+        <dex dex="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\pre-dexed\debug\auto-parcel-0.2-923cb652ab46b836dfbc303803c9b3194d729748.jar" />
+    </item>
+    <item
+        jar="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\exploded-aar\nl.littlerobots.bean\beanlib\0.9.2\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="9cb0fd08d17910f176d6028077c45e3ed093b255">
+        <dex dex="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\pre-dexed\debug\classes-f5ba902606ac08e5caa6f074de816f8625bd5a4d.jar" />
+    </item>
+    <item
+        jar="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\pre-dexed\debug\classes-8d3a3ea6505cb0f32d828d6575975d928d267e62.jar" />
+    </item>
+    <item
+        jar="C:\Users\Kimv\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.0.0\2534c458682c73f5b9871131ab3098d3f987ca3\okio-1.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="02534c458682c73f5b9871131ab3098d3f987ca3">
+        <dex dex="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\pre-dexed\debug\okio-1.0.0-1e8ebeb27fc940f258924cb3a39c0baf1bf4a22d.jar" />
+    </item>
+    <item
+        jar="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\libs\internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-6616ef2071d195a9ff0dcc9a82456052bc29aaef.jar" />
+    </item>
+    <item
+        jar="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.5.87\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="dd9247ea0fabe8ee479638c4b4a23e93752be256">
+        <dex dex="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\pre-dexed\debug\classes-b96cf27feea511ecd2acc3916e4121895e9b35b9.jar" />
+    </item>
+    <item
+        jar="E:\Programming\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-85e779651cdad8dcfbcf7a069373a6ce088d9046.jar" />
+    </item>
+    <item
+        jar="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="C:\Users\Kimv\Desktop\MVD\app\build\intermediates\pre-dexed\debug\classes-3c5ac546fd35f3b77342c34977bc5ee033e39a12.jar" />
+    </item>
+
+</items>
